@@ -1,0 +1,87 @@
+// 1、嵌套规则
+
+// 2、父选择器 &
+
+// 3、变量
+$width: 60vh; // 全局变量
+
+#main {
+    $width: 60vh !global; // 从局部变量扩展到全局变量
+}
+
+// 4、数据类型
+//  数值 1 1px
+//  字符串 'foo' baz
+//  布尔值 true false
+//  空值  null
+//  数组  1em 2em 3em 4em 或者 1em, 2em, 3em, 4em
+//  对象  (key1: val1, key2: val2)
+
+// 5、运算
+// 数值支持 + - * / % 
+// 关系运算 == != < > <= >= 
+// 布尔运算 and or not
+
+// 6、混入
+@mixin fs($size) {
+    font-size: $size;
+}
+
+#main {
+    @include fs(20px)
+}
+
+// 7、继承
+.error {
+    border: 1px #f00;
+}
+
+.seriousError {
+    @extend .error;
+    border-width: 3px;
+}
+
+// 8、判断
+$type: monster;
+p {
+  @if $type == ocean {
+    color: blue;
+  } @else if $type == matador {
+    color: red;
+  } @else if $type == monster {
+    color: green;
+  } @else {
+    color: black;
+  }
+}
+
+// 9、循环
+// through 表示包含1-3的值 
+// to 表示包含1-2的值, 不包含3
+@for $i from 1 through 3 {
+    .item-#{$i} { width: 2em * $i; }
+}
+
+// 10、遍历
+@each $animal in puma, sea-slug, egret, salamander {
+    .#{$animal}-icon {
+      background-image: url('/images/#{$animal}.png');
+    }
+}
+
+// 11、判断
+$i: 6;
+@while $i > 0 {
+    .item-#{$i} { width: 2em * $i; }
+    $i: $i - 2;
+}
+
+// 12、函数
+$grid-width: 40px;
+$gutter-width: 10px;
+
+@function grid-width($n) {
+    @return $n * $grid-width + ($n - 1) * $gutter-width;
+}
+
+#sidebar { width: grid-width(5); }
