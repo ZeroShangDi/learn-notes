@@ -1,0 +1,7 @@
+
+
+```
+function finshComponentSetup(instance, isSSR) {
+
+}
+```
