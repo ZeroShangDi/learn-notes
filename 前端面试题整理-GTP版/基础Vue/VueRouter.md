@@ -38,6 +38,87 @@ Vue 路由有两种模式，分别是哈希模式（Hash mode）和历史模式�
 
 在选择路由模式时，可以根据项目的需求和浏览器的兼容性做出选择。通常情况下，如果需要兼容性较好且不需要处理服务器端路由，可以使用哈希模式；如果需要 URL 更加美观、可以利用浏览器历史记录等功能，可以使用历史模式。
 
+# vue的路由模式分别是监听什么来获取的？
+
+Vue Router 是 Vue.js 的官方路由库，用于在单页面应用（SPA）中实现路由功能。Vue Router 支持两种主要的路由模式：`hash` 模式和 `history` 模式。它们分别监听不同的浏览器 API 来获取和管理路由状态。
+
+### 1. Hash 模式
+
+**监听对象**：`window.location.hash`
+
+**原理**：
+- `hash` 模式利用的是 URL 中的哈希（`#`）部分。哈希部分的变化不会触发页面刷新，而是通过监听 `hashchange` 事件来检测 URL 的变化。
+- 在 `hash` 模式下，URL 的格式通常是 `http://example.com/#/some/path`，其中 `#/some/path` 就是路由路径。
+
+**实现机制**：
+- 当路由变化时，Vue Router 会改变 `window.location.hash` 的值。
+- 浏览器会触发 `hashchange` 事件，Vue Router 会通过监听这个事件来更新视图。
+
+**代码示例**：
+```javascript
+const router = new VueRouter({
+  mode: 'hash',
+  routes: [
+    { path: '/', component: Home },
+    { path: '/about', component: About }
+  ]
+});
+```
+
+### 2. History 模式
+
+**监听对象**：`window.history`
+
+**原理**：
+- `history` 模式利用的是 HTML5 History API（`pushState`、`replaceState` 和 `popstate` 事件）来实现路由管理。
+- 这种模式的 URL 看起来像常规的路径（例如 `http://example.com/some/path`），更符合 RESTful 风格和用户习惯。
+
+**实现机制**：
+- 当路由变化时，Vue Router 使用 `pushState` 或 `replaceState` 方法来改变浏览器的历史记录栈。
+- 浏览器会触发 `popstate` 事件，Vue Router 通过监听这个事件来更新视图。
+
+**代码示例**：
+```javascript
+const router = new VueRouter({
+  mode: 'history',
+  routes: [
+    { path: '/', component: Home },
+    { path: '/about', component: About }
+  ]
+});
+```
+
+### 3. Abstract 模式
+
+**监听对象**：无（内存中的状态）
+
+**原理**：
+- `abstract` 模式主要用于非浏览器环境，例如 Node.js 环境下的服务端渲染（SSR）。
+- 这种模式下，Vue Router 不依赖浏览器的历史记录或哈希变化，而是通过内存中的状态管理路由。
+
+**实现机制**：
+- 路由的变化仅在内存中维护，不会反映到 URL 上。
+
+**代码示例**：
+```javascript
+const router = new VueRouter({
+  mode: 'abstract',
+  routes: [
+    { path: '/', component: Home },
+    { path: '/about', component: About }
+  ]
+});
+```
+
+### 总结
+
+- **Hash 模式**：通过监听 `window.location.hash` 和 `hashchange` 事件来获取路由变化，URL 格式包含 `#` 符号，不会触发页面刷新。
+- **History 模式**：通过 HTML5 History API（`pushState`、`replaceState` 和 `popstate` 事件）来管理路由，更加符合标准的 URL 格式，支持服务器端的配置。
+- **Abstract 模式**：主要用于非浏览器环境，不依赖 URL 变化，路由状态仅在内存中维护。
+
+选择哪种模式主要取决于应用的需求和运行环境。对于大多数前端应用来说，`history` 模式提供了更好的用户体验，但需要服务器配置支持；而 `hash` 模式简单易用，无需服务器配置，适用于静态文件托管环境。
+
+
 # 简述vue-router 路由钩子函数是什么？执行顺序是什么？",
 
 

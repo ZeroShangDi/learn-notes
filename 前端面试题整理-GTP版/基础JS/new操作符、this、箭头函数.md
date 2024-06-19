@@ -96,3 +96,55 @@ const person1 = new Person('Alice', 30);
 - **避免滥用箭头函数：** 箭头函数适用于需要保持定义时上下文的情况，但不适合作为对象的方法，因为它会捕获外层作用域的 `this`，而不是调用时的对象。
 
 总的来说，理解和熟练运用 `this` 的指向以及改变 `this` 指向的方法可以帮助开发者写出更加灵活和可维护的 JavaScript 代码。
+
+# new、显示绑定、隐式绑定、默认绑定的优先级
+
+在 JavaScript 中，函数调用时的 `this` 绑定优先级可以通过下面的顺序进行描述：
+
+1. **new 绑定**：当使用 `new` 关键字调用构造函数时，会创建一个新对象并将 `this` 绑定到这个新对象上。这种绑定的优先级最高。
+
+   ```javascript
+   function Person(name) {
+     this.name = name;
+   }
+
+   const person = new Person('Alice');
+   console.log(person.name); // Alice
+   ```
+
+2. **显示绑定**：通过 `call`、`apply` 或 `bind` 方法显式指定函数调用时的 `this` 值。这种绑定的优先级次于 `new` 绑定。
+
+   ```javascript
+   function greet() {
+     console.log(`Hello, ${this.name}!`);
+   }
+
+   const obj = { name: 'Alice' };
+   greet.call(obj); // Hello, Alice!
+   ```
+
+3. **隐式绑定**：当函数作为对象的方法调用时，函数内部的 `this` 自动绑定到调用该函数的对象上。这种绑定的优先级次于显示绑定。
+
+   ```javascript
+   const obj = {
+     name: 'Alice',
+     greet() {
+       console.log(`Hello, ${this.name}!`);
+     }
+   };
+
+   obj.greet(); // Hello, Alice!
+   ```
+
+4. **默认绑定**：如果函数调用没有应用上述任何绑定规则，则会应用默认绑定。在严格模式下，`this` 会绑定到 `undefined`；在非严格模式下，`this` 会绑定到全局对象（浏览器中通常是 `window` 对象）。默认绑定是优先级最低的。
+
+   ```javascript
+   function greet() {
+     console.log(`Hello, ${this.name}!`);
+   }
+
+   const name = 'Alice';
+   greet(); // Hello, Alice! (非严格模式下，this 绑定到全局对象 window)
+   ```
+
+在实际应用中，可以根据需要选择合适的绑定方式来确保函数中的 `this` 总是指向正确的对象，从而避免意外行为和错误。
