@@ -442,6 +442,139 @@ export default router;
 使用 Vue Router 实现懒加载的常见方法包括动态 `import`、Webpack 的 `require.ensure`、Webpack 魔法注释、结合 Vue 的异步组件以及在路由前守卫中进行预加载。推荐使用动态 `import` 结合 Vue CLI 来实现简单、高效的懒加载。通过合理使用懒加载技术，可以显著提升 Vue.js 应用的性能和用户体验。
 
 
+# 简述vue-router 组件复用导致路由参数失效怎么办
+
+在使用 Vue Router 时，可能会遇到组件复用导致路由参数失效的问题。具体来说，当你在同一个组件内切换路由时，组件不会被重新创建，而是被复用。这种情况下，组件的生命周期钩子不会被重新触发，可能导致你无法获取到新的路由参数。
+
+### 解决方法
+
+1. **使用 `watch` 监听 `$route` 对象的变化**
+
+   你可以通过在组件内 `watch` `$route` 对象的变化来检测路由参数的变化，然后在回调函数中处理参数变化逻辑。
+
+   ```vue
+   <template>
+     <div>
+       <h1>Current ID: {{ id }}</h1>
+     </div>
+   </template>
+
+   <script>
+   export default {
+     data() {
+       return {
+         id: this.$route.params.id
+       };
+     },
+     watch: {
+       '$route.params.id'(newId) {
+         this.id = newId;
+         this.fetchData(newId); // 根据新的ID获取数据
+       }
+     },
+     methods: {
+       fetchData(id) {
+         // 获取数据逻辑
+       }
+     },
+     created() {
+       this.fetchData(this.id);
+     }
+   };
+   </script>
+   ```
+
+2. **使用路由守卫**
+
+   你可以在路由配置中使用 `beforeRouteUpdate` 路由守卫来处理参数变化。
+
+   ```vue
+   <template>
+     <div>
+       <h1>Current ID: {{ id }}</h1>
+     </div>
+   </template>
+
+   <script>
+   export default {
+     data() {
+       return {
+         id: this.$route.params.id
+       };
+     },
+     methods: {
+       fetchData(id) {
+         // 获取数据逻辑
+       }
+     },
+     beforeRouteUpdate(to, from, next) {
+       this.id = to.params.id;
+       this.fetchData(to.params.id);
+       next();
+     },
+     created() {
+       this.fetchData(this.id);
+     }
+   };
+   </script>
+   ```
+
+3. **强制组件重新渲染**
+
+   可以通过为组件添加 `key` 属性来强制重新渲染组件，每次路由参数变化时，修改 `key` 值。
+
+   ```vue
+   <template>
+     <div>
+       <h1>Current ID: {{ id }}</h1>
+     </div>
+   </template>
+
+   <script>
+   export default {
+     data() {
+       return {
+         id: this.$route.params.id
+       };
+     },
+     watch: {
+       '$route.params.id': {
+         handler(newId) {
+           this.id = newId;
+           this.fetchData(newId); // 根据新的ID获取数据
+         },
+         immediate: true
+       }
+     },
+     methods: {
+       fetchData(id) {
+         // 获取数据逻辑
+       }
+     }
+   };
+   </script>
+
+   <!-- 在路由配置中添加 key -->
+   const routes = [
+     {
+       path: '/item/:id',
+       component: ItemComponent,
+       props: true,
+       key: route => route.params.id
+     }
+   ];
+   ```
+
+### 总结
+
+当你在 Vue Router 中遇到组件复用导致路由参数失效的问题时，可以采用以下几种方法来解决：
+
+1. 使用 `watch` 监听 `$route` 对象的变化。
+2. 使用路由守卫（`beforeRouteUpdate`）。
+3. 通过 `key` 强制重新渲染组件。
+
+这些方法都能有效地处理路由参数变化，并确保组件能够正确响应新的路由参数。
+
 # 解释 Vue route和router的区别
 
 在 Vue.js 中，`route` 和 `router` 是 Vue Router 提供的两个核心概念，理解它们的区别有助于更好地使用 Vue Router 进行前端路由管理。

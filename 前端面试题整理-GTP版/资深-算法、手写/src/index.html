@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+</body>
+<style>
+    html, body {
+        width: 100%;
+        overflow-x: scroll;
+
+    }
+    .col {
+        border: 1px solid #000;
+    }
+    .row {
+        width: 60px;
+        height: 30px;
+        font-size: 14px;
+        line-height: 30px;
+        text-align: center;
+        display: inline-block;
+        border-right: 1px solid #eee;
+    }
+    .row.red {
+        background-color: red;
+    }
+    .row.green {
+        background-color: green;
+    }
+    .row.yellow {
+        background-color: yellow;
+    }
+    .row.azure {
+        background-color: azure;
+    }
+</style>
+<script>
+    let str = [];
+    for(let i=0; i<3; i++) {
+        str.push('<div class="col">');
+        for(let n=0; n<i*5; n++) {
+            str.push('<div class="row"></div>')
+        }
+        for(let j=1; j<16; j++) {
+            if (j > 12) {
+                str.push(`<div class="row azure">${j * 5}-${j * 5 + 5}</div>`)
+            } else if (j >= 8) {
+                str.push(`<div class="row green">${j * 5}-${j * 5 + 5}</div>`)
+            } else if (j >= 5) {
+                str.push(`<div class="row red">${j * 5}-${j * 5 + 5}</div>`)
+            } else if (j >= 1) {
+                str.push(`<div class="row yellow">${j * 5}-${j * 5 + 5}</div>`)
+            } else {
+                str.push(`<div class="row">${j * 5}-${j * 5 + 5}</div>`)
+            }
+        }
+        str.push('</div>');
+    }
+    document.body.insertAdjacentHTML('beforeend', str.join(''));
+    document.querySelectorAll('div.row').forEach(item => {
+        item.addEventListener('click', () => {
+            item.style.background = 'blue';
+        });
+    });
+
+    // 需要赡养年限
+    // 对上从自己开始工作开始，对下直到25岁工作，对自己到子女开始工作。65岁以后养老靠养老金。
+</script>
+</html>
